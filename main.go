@@ -8,6 +8,20 @@ import
     "html/template"
 )
 
+
+type TacBoard struct{
+    one,
+    two,
+    three,
+    four,
+    five,
+    six,
+    seven,
+    eight,
+    nine string
+}
+
+
 func session(w http.ResponseWriter, r *http.Request){
     //fmt.Fprintf(w, "Your Request: %s\n", r.URL.Path)
     //fmt.Fprintf(w, "Your Method: %s\n", r.Method)
@@ -78,9 +92,39 @@ func session(w http.ResponseWriter, r *http.Request){
             http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
         }
     }else if r.URL.Path == "/Games"{
-        //Games 
-    }
+        if r.Method == http.MethodGet{
+            tmplt, err := template.ParseFiles("static/games.html")
+            if err != nil{
+                http.Error(w, "1Games Internal Error", http.StatusInternalServerError)
+                return
+            }
 
+            w.Header().Set("content-Type", "text/html")
+            err = tmplt.Execute(w, nil)
+            if err != nil{
+                http.Error(w, "2Games Internal Error", http.StatusInternalServerError)
+                return 
+            }
+        }
+    }else if r.URL.Path == "/Games/TicTacToe"{
+        if r.Method == http.MethodGet{
+            tmplt, err := template.ParseFiles("static/TicTacToe.html")
+            if err != nil{
+                http.Error(w, "1TicTacToe Internal Error", http.StatusInternalServerError)
+                return
+            }
+
+            w.Header().Set("content-type", "text/html")
+            data := TacBoard {"", "", "", "", "", "", "", "", ""}
+            err = tmplt.Execute(w, data)
+            if err != nil{
+                http.Error(w, "2TicTacToe Internal Error", http.StatusInternalServerError)
+                return 
+            }
+        }else if r.Method == http.MethodPost{
+            //Prossess playing game
+        }
+    }
 }
 
 
