@@ -17,7 +17,7 @@ func login(w http.ResponseWriter, r *http.Request){
 
         //check account details against database
 
-        if username == "admin" && password == "password" {
+        if checkUser(username, password){
             cookie := http.Cookie{
                 Name: "session",
                 Value: "loggedin",

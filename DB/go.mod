@@ -1,4 +1,4 @@
-module HTTP
+module DB
 
 go 1.18
 
