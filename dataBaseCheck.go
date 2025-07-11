@@ -8,7 +8,7 @@ import (
 )
 
 func checkUser(name, pass string) bool {
-    fmt.Println("checking")
+    //fmt.Println("checking")
 
     db, err := sql.Open("sqlite3", "./DB/credDB.db")
     if err != nil{
@@ -22,7 +22,7 @@ func checkUser(name, pass string) bool {
     err = db.QueryRow(query, name, pass).Scan(&id)
 
     if err == sql.ErrNoRows{
-        fmt.Println("No user found")
+        //fmt.Println("No user found")
         return false
     }else if err != nil {
         panic(err)
