@@ -34,6 +34,14 @@
     color:#333333;
 }
 
+h1{
+    color: #333333;
+}
+
+h2{
+    color: #A5A5A5;
+}
+
 body{
     display: flex;
     flex-direction: column;

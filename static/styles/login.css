@@ -1,0 +1,17 @@
+
+h1{
+    display:flex
+    color: #333333;
+    align-items: center;
+    justify-content: center;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #000000;
+    color: #A5A5A5;
+}
+

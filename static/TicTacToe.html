@@ -6,21 +6,30 @@
         <link rel="stylesheet" type="text/css" href="/static/styles/TicTacToe.css">
     </head>
     <body>
-        <div class class="container">
-        <div class="header">
-            <h1>Tic - Tac - Toe</h1>
+        <div class="container">
+            <div class="header">
+                <h1>Tic - Tac - Toe</h1>
+            </div>
+
+            <div class="status">
+                <h2 id="gameStatus">Current Player: X</h2>
+                <button id="reset-btn" class="reset-btn" style="display: none;">New Game</button>
+            </div>
+
+            <div class="board" >
+                <button class="cell" data-cell="0"></button>
+                <button class="cell" data-cell="1"></button>
+                <button class="cell" data-cell="2"></button>
+
+                <button class="cell" data-cell="3"></button>
+                <button class="cell" data-cell="4"></button>
+                <button class="cell" data-cell="5"></button>
+
+                <button class="cell" data-cell="6"></button>
+                <button class="cell" data-cell="7"></button>
+                <button class="cell" data-cell="8"></button>
+            </div>
         </div>
-        <div class="board">
-            <button class="cell">{{1}}</button>
-            <button class="cell">{{2}}</button>
-            <button class="cell">{{3}}</button>
-            <button class="cell">{{4}}</button>
-            <button class="cell">{{5}}</button>
-            <button class="cell">{{6}}</button>
-            <button class="cell">{{7}}</button>
-            <button class="cell">{{8}}</button>
-            <button class="cell">{{9}}</button>
-        </div>
-        </div>
+        <script src="/static/scripts/tempTicTacToe.js"></script>
     </body>
 </html>

@@ -9,23 +9,41 @@ import
 )
 
 
-type TacBoard struct{
-    one,
-    two,
-    three,
-    four,
-    five,
-    six,
-    seven,
-    eight,
-    nine string
+func login(w http.ResponseWriter, r *http.Request){
+    if r.Method == http.MethodPost {
+        r.ParseForm()
+        username := r.FormValue("username")
+        password := r.FormValue("password")
+
+        //check account details against database
+
+        if username == "admin" && password == "password" {
+            cookie := http.Cookie{
+                Name: "session",
+                Value: "loggedin",
+                Path: "/",
+                HttpOnly: true,
+            }
+            
+            http.SetCookie(w, &cookie)
+            http.Redirect(w, r, "/Home", http.StatusSeeOther)
+            return 
+        }
+        http.Error(w, "Invalid Credentials", http.StatusUnauthorized)
+    }
 }
 
+func requireLogin(w http.ResponseWriter, r *http.Request) bool {
+    cookie, err := r.Cookie("session")
+
+    if err != nil || cookie.Value != "loggedin" {
+        http.Redirect(w, r, "/", http.StatusSeeOther)
+        return false
+    }
+    return true
+}
 
 func session(w http.ResponseWriter, r *http.Request){
-    //fmt.Fprintf(w, "Your Request: %s\n", r.URL.Path)
-    //fmt.Fprintf(w, "Your Method: %s\n", r.Method)
-
     if r.URL.Path == "/Hello"{
         w.Header().Set("Content-Type", "text/html")
         tmplt, err := template.ParseFiles("static/hello.html")
@@ -40,6 +58,27 @@ func session(w http.ResponseWriter, r *http.Request){
             return 
         }
     }else if r.URL.Path == "/"{
+        if r.Method == http.MethodGet {
+        tmplt, err:= template.ParseFiles("static/login.html")
+        if err != nil {
+            http.Error(w, "1Internal Error", http.StatusInternalServerError)
+            return
+        }
+
+        w.Header().Set("Content-Type", "text/html; charset=utf-8")
+        err = tmplt.Execute(w, nil)
+        if err != nil {
+            http.Error(w, "2Internal Error", http.StatusInternalServerError)
+            return 
+        }
+    }else if r.Method == http.MethodPost {
+        login(w, r)
+    }
+    }else if r.URL.Path == "/Home"{
+        if !requireLogin(w, r) {
+            return
+        }
+
         tmplt, err := template.ParseFiles("static/home.html")
 
         if err != nil{
@@ -54,6 +93,10 @@ func session(w http.ResponseWriter, r *http.Request){
             return
         }
     }else if r.URL.Path == "/Calc"{
+        if  !requireLogin(w, r) {
+            return
+        }
+
         if r.Method == http.MethodGet{
             tmplt, err := template.ParseFiles("static/calc.html")
             if err != nil{
@@ -67,6 +110,10 @@ func session(w http.ResponseWriter, r *http.Request){
                 http.Error(w, "2Internal Server Error", http.StatusInternalServerError)
             }
         }else if r.Method == http.MethodPost{
+            if requireLogin(w, r){
+                return 
+            }
+
             r.ParseForm()
             num1 := r.FormValue("num1")
             num2 := r.FormValue("num2")
@@ -92,6 +139,10 @@ func session(w http.ResponseWriter, r *http.Request){
             http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
         }
     }else if r.URL.Path == "/Games"{
+        if !requireLogin(w, r) {
+            return
+        }
+
         if r.Method == http.MethodGet{
             tmplt, err := template.ParseFiles("static/games.html")
             if err != nil{
@@ -107,6 +158,10 @@ func session(w http.ResponseWriter, r *http.Request){
             }
         }
     }else if r.URL.Path == "/Games/TicTacToe"{
+        if !requireLogin(w, r){
+            return
+        }
+
         if r.Method == http.MethodGet{
             tmplt, err := template.ParseFiles("static/TicTacToe.html")
             if err != nil{
@@ -114,15 +169,13 @@ func session(w http.ResponseWriter, r *http.Request){
                 return
             }
 
-            w.Header().Set("content-type", "text/html")
-            data := TacBoard {"", "", "", "", "", "", "", "", ""}
-            err = tmplt.Execute(w, data)
+            w.Header().Set("Content-type", "text/html")
+            err = tmplt.Execute(w, nil)
             if err != nil{
-                http.Error(w, "2TicTacToe Internal Error", http.StatusInternalServerError)
+                //http.Error(w, "2TicTacToe Internal Error", http.StatusInternalServerError)
+                fmt.Println("Failed")
                 return 
             }
-        }else if r.Method == http.MethodPost{
-            //Prossess playing game
         }
     }
 }
