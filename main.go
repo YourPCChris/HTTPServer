@@ -8,41 +8,6 @@ import
     "html/template"
 )
 
-
-func login(w http.ResponseWriter, r *http.Request){
-    if r.Method == http.MethodPost {
-        r.ParseForm()
-        username := r.FormValue("username")
-        password := r.FormValue("password")
-
-        //check account details against database
-
-        if checkUser(username, password){
-            cookie := http.Cookie{
-                Name: "session",
-                Value: "loggedin",
-                Path: "/",
-                HttpOnly: true,
-            }
-            
-            http.SetCookie(w, &cookie)
-            http.Redirect(w, r, "/Home", http.StatusSeeOther)
-            return 
-        }
-        http.Error(w, "Invalid Credentials", http.StatusUnauthorized)
-    }
-}
-
-func requireLogin(w http.ResponseWriter, r *http.Request) bool {
-    cookie, err := r.Cookie("session")
-
-    if err != nil || cookie.Value != "loggedin" {
-        http.Redirect(w, r, "/", http.StatusSeeOther)
-        return false
-    }
-    return true
-}
-
 func session(w http.ResponseWriter, r *http.Request){
     if r.URL.Path == "/Hello"{
         w.Header().Set("Content-Type", "text/html")
@@ -72,10 +37,48 @@ func session(w http.ResponseWriter, r *http.Request){
             return 
         }
     }else if r.Method == http.MethodPost {
-        login(w, r)
+        Login(w, r)
     }
+    }else if r.URL.Path == "/AddUser"{
+        if r.Method == http.MethodGet{
+            if !RequireLogin(w, r){
+                return 
+            }
+            tmplt, err := template.ParseFiles("static/addUser.html")
+            if err != nil{
+                http.Error(w, "1Internal Error", http.StatusInternalServerError)
+                return
+            }
+
+            w.Header().Set("Content-Type", "text/html")
+            err = tmplt.Execute(w, nil)
+            if err != nil{
+                http.Error(w, "2Internal Server Error", http.StatusInternalServerError)
+                return
+            }
+
+        }else if r.Method == http.MethodPost{
+            if !RequireLogin(w, r){
+                return 
+            }
+
+            r.ParseForm()
+            adminUsername := r.FormValue("adminUsername")
+            adminPassword := r.FormValue("adminPassword")
+            newUsername := r.FormValue("newUsername")
+            newPassword := r.FormValue("newPassword")
+
+            UserPresent, isAdmin := checkUser(adminUsername, adminPassword)
+            if UserPresent && isAdmin{
+                err := addUserToDB(newUsername, newPassword, false)
+                if !err{
+                    fmt.Println("Failed to add user")
+                    return
+                }
+            }
+        }
     }else if r.URL.Path == "/Home"{
-        if !requireLogin(w, r) {
+        if !RequireLogin(w, r) {
             return
         }
 
@@ -93,7 +96,7 @@ func session(w http.ResponseWriter, r *http.Request){
             return
         }
     }else if r.URL.Path == "/Calc"{
-        if  validUser := requireLogin(w, r); !validUser {
+        if  validUser := RequireLogin(w, r); !validUser {
             fmt.Println(validUser)
             return
         }
@@ -111,7 +114,7 @@ func session(w http.ResponseWriter, r *http.Request){
                 http.Error(w, "2Internal Server Error", http.StatusInternalServerError)
             }
         }else if r.Method == http.MethodPost{
-            if !requireLogin(w, r){
+            if !RequireLogin(w, r){
                 return 
             }
 
@@ -140,7 +143,7 @@ func session(w http.ResponseWriter, r *http.Request){
             http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
         }
     }else if r.URL.Path == "/Games"{
-        if !requireLogin(w, r) {
+        if !RequireLogin(w, r) {
             return
         }
 
@@ -159,7 +162,7 @@ func session(w http.ResponseWriter, r *http.Request){
             }
         }
     }else if r.URL.Path == "/Games/TicTacToe"{
-        if !requireLogin(w, r){
+        if !RequireLogin(w, r){
             return
         }
 
