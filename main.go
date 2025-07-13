@@ -93,7 +93,8 @@ func session(w http.ResponseWriter, r *http.Request){
             return
         }
     }else if r.URL.Path == "/Calc"{
-        if  !requireLogin(w, r) {
+        if  validUser := requireLogin(w, r); !validUser {
+            fmt.Println(validUser)
             return
         }
 
@@ -110,7 +111,7 @@ func session(w http.ResponseWriter, r *http.Request){
                 http.Error(w, "2Internal Server Error", http.StatusInternalServerError)
             }
         }else if r.Method == http.MethodPost{
-            if requireLogin(w, r){
+            if !requireLogin(w, r){
                 return 
             }
 
