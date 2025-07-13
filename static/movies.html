@@ -1,0 +1,20 @@
+
+<!DOCTYPE>
+<html>
+    <head>
+        <title>Movie Gallery</title>
+        <link rel="stylesheet" type="text/css" href="/static/styles/genericStyles.css">
+        <link rel="stylesheet" type="text/css" href="/static/styles/movieStyles.css">
+    </head>
+    <body>
+        <div class="container">
+        {{ range .movies}}
+            <div class="movie">
+                <p>{{.}}</p>
+            </div>
+        {{ else }}
+        <div class="movie">No Name Found.</div>
+        {{end}}
+        </div>
+    </body>
+</html>
