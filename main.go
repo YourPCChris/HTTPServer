@@ -68,10 +68,11 @@ func session(w http.ResponseWriter, r *http.Request){
             newUsername := r.FormValue("newUsername")
             newPassword := r.FormValue("newPassword")
 
-            UserPresent, isAdmin := checkUser(adminUsername, adminPassword)
-            if UserPresent && isAdmin{
-                err := addUserToDB(newUsername, newPassword, false)
-                if !err{
+            userPresent, isAdmin := checkUser(adminUsername, adminPassword)
+            fmt.Println("Present: ", userPresent, "Admin", isAdmin)
+            if userPresent && isAdmin{
+                wasAdded := addUserToDB(newUsername, newPassword, false)
+                if !wasAdded{
                     fmt.Println("Failed to add user")
                     return
                 }

@@ -8,42 +8,42 @@ import (
     "golang.org/x/crypto/bcrypt"
 )
 
-func checkUser(name, pass string) (bool, bool){
-    //fmt.Println("checking")
 
+func checkUser(name, pass string) (bool, bool){
     db, err := sql.Open("sqlite3", "./DB/credDB.db")
-    if err != nil{
+    if err != nil {
         panic(err)
     }
     defer db.Close()
 
-
-    query := "SELECT isAdmin FROM users WHERE username = ? AND password = ?"
-    var isAdmin bool 
-    newHashedPass, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
-    if err != nil {
-        fmt.Println("Failed to hash password")
+    query := "SELECT password FROM users WHERE username = ?"
+    var storedPassword string
+    qerr := db.QueryRow(query, name).Scan(&storedPassword)
+    if qerr == sql.ErrNoRows{
+        fmt.Println("User does not exist")
         return false, false
+    }else if qerr != nil{
+        fmt.Println("Failed to query database")
+        return false, false 
+    }else if qerr == nil{
+        err := bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(pass))
+        if err != nil{
+            return false, false
+        }else if err == nil{
+            var isAdmin bool 
+            query = "SELECT isAdmin FROM users WHERE username = ?"
+            qerr = db.QueryRow(query, name).Scan(&isAdmin)
+            return true, isAdmin
+        }
     }
-
-    err = db.QueryRow(query, name, string(newHashedPass)).Scan(&isAdmin)
-
-    if err == sql.ErrNoRows{
-        //fmt.Println("No user found")
-        return false, false
-    }else if err != nil {
-        panic(err)
-        return false, false
-    }else {
-        fmt.Println("User found")
-        return true, isAdmin
-    }
+    return false, false 
 }
+
 
 func addUserToDB(name, pass string, admin bool) bool {
     var command string = "INSERT INTO users (username, password, isAdmin) VALUES (?, ?, ?)"
 
-    db, err := sql.Open("sql3", "/DB/credDB.db")
+    db, err := sql.Open("sqlite3", "./DB/credDB.db")
     if err != nil{
         fmt.Println("Failed to open DB")
         return false;
