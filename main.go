@@ -68,14 +68,10 @@ func session(w http.ResponseWriter, r *http.Request){
             newUsername := r.FormValue("newUsername")
             newPassword := r.FormValue("newPassword")
 
-            userPresent, isAdmin := checkUser(adminUsername, adminPassword)
-            fmt.Println("Present: ", userPresent, "Admin", isAdmin)
-            if userPresent && isAdmin{
-                wasAdded := addUserToDB(newUsername, newPassword, false)
-                if !wasAdded{
-                    fmt.Println("Failed to add user")
-                    return
-                }
+            wasAdded := addUserToDB(adminUsername, adminPassword, newUsername, newPassword, false)
+            if !wasAdded{
+                fmt.Println("Failed to add user")
+                return
             }
         }
     }else if r.URL.Path == "/Home"{
@@ -182,12 +178,48 @@ func session(w http.ResponseWriter, r *http.Request){
                 return 
             }
         }
+    }else if r.URL.Path == "/Cloud" {
+        tmplt, err := template.ParseFiles("static/cloudMenu.html")
+        if err != nil{
+            http.Error(w, "1Cloud Menu Internal Error", http.StatusInternalServerError)
+            return
+        }
+
+        w.Header().Set("Content-type", "text/html")
+        err = tmplt.Execute(w, nil)
+        if err != nil{
+            http.Error(w, "2Cloud Menu Exectute Error", http.StatusInternalServerError)
+            return
+        }
+    }else if r.URL.Path == "/Cloud/Upload" {
+        tmplt, err := template.ParseFiles("static/uploadPage.html")
+        if err != nil {
+            http.Error(w, "Failed opening upload page", http.StatusInternalServerError)
+            return 
+        }
+
+        w.Header().Set("Content-type", "text/html")
+        err = tmplt.Execute(w, nil)
+        if err != nil {
+            http.Error(w, "Failed to set Header", http.StatusInternalServerError)
+            return
+        }
     }
 }
 
 
 func main(){
     fmt.Println("We Ball")
+
+    storageFolder := "Storage"
+    err := InitStorage(storageFolder)
+    if err != nil{
+        panic(err)
+    }
+
+    http.HandleFunc("/upload", UploadHandler(storageFolder))
+    http.Handle("/files/", FilesHandler(storageFolder))
+    http.HandleFunc("/Cloud/browse", ListFilesHandler(storageFolder))
 
     http.HandleFunc("/", session)
     fmt.Println("Listening on Port: 8080")

@@ -22,6 +22,15 @@ func main(){
         panic(err)
     }
 
+    //Delete Table 
+    /*
+    deleteTable := "DROP TABLE IF EXISTS users"
+    _, err = db.Exec(deleteTable)
+    if err != nil{
+        panic(err)
+    }
+    */
+
     table := `
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -42,20 +51,16 @@ func main(){
     }
     */
 
-    /*
-    firstPassword, err := bcrypt.GenerateFromPassword([]byte(""), bcrypt.DefaultCost)
+    firstPassword, err := bcrypt.GenerateFromPassword([]byte("EmpireBennett909@"), bcrypt.DefaultCost)
     if err != nil{
         fmt.Println("Hash Failed")
         return
     }
-    */
 
-    /*
     _, err = db.Exec("INSERT INTO users (username, password, isAdmin) VALUES (?, ?, ?)", "Chris", string(firstPassword), true)
     if err != nil{
         panic(err)
     }
-    */
 
     fmt.Println("Finsihed")
 }
