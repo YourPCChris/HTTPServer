@@ -4,18 +4,25 @@
     <title>Calcualtor</title>
     <link rel="stylesheet" type="text/css" href="/static/styles/genericStyles.css">
     <link rel="stylesheet" type="text/css" href="/static/styles/calcStyles.css">
+    </head>
     <body>
-        <h1>Calculator</h1>
-        <form method="POST" action="/Calc">
-        <input type="number" name="num1" step="any" palceholder="First Number" required>
-        <input type="number" name="num2" step="any" palceholder="Second Number" required><br><br>
+        <div class="Container">
+            <div class="Header">
+                <h1>Calculator</h1>
+            </div>
+            <div class="MenuContainer">
+                <form method="POST" action="/Calc">
+                <input type="number" name="num1" step="any" palceholder="First Number" required>
+                <input type="number" name="num2" step="any" palceholder="Second Number" required><br><br>
 
-        <label><input type="radio" name="operation" value="add" checked> Add </label>
-        <label><input type="radio" name="operation" value="sub" checked> Subtract </label>
-        <label><input type="radio" name="operation" value="div" checked> Divide </label>
-        <label><input type="radio" name="operation" value="mul" checked> Multiply </label>
+                <label><input type="radio" name="operation" value="add" checked> Add </label>
+                <label><input type="radio" name="operation" value="sub" checked> Subtract </label>
+                <label><input type="radio" name="operation" value="div" checked> Divide </label>
+                <label><input type="radio" name="operation" value="mul" checked> Multiply </label>
 
-        <button type="submit">Submit</button>
+                <button type="submit">Submit</button>
+            </div>
+        </div>
     </body>
 </html>
 

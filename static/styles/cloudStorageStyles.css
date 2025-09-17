@@ -1,0 +1,9 @@
+
+.CircleOne
+{
+    transform: translateX(60%);
+}
+.CircleTwo
+{
+    transform: translateX(-60%);
+}

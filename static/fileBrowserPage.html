@@ -1,18 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
     <title>Uploaded Files</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles/genericStyles.css">
+    <link rel="stylesheet" type="text/css" href="/static/styles/cloudStorageStyles.css">
+    <link rel="stylesheet" type="text/css" href="/static/styles/fileBrowserStyles.css">
 </head>
 <body>
-    <h1>Uploaded Files</h1>
-    <ul>
-        {{range .}}
-            <li><a href="/files/{{.}}">{{.}}</a></li>
-        {{else}}
-            <li>No files uploaded yet.</li>
-        {{end}}
-    </ul>
+    <div class="Container">
+        <div class="Header">
+        <h1>Uploaded Files</h1>
+        </div>
+
+        <div class="MenuContainer">
+            <ul>
+                {{range .}}
+                    <li>
+                        <a href="/files/{{.}}">{{.}}</a>
+                        <a href="/Cloud/download?file={{.}}">Download</a>
+                    </li>
+                {{else}}
+                    <li>No files uploaded yet.</li>
+                {{end}}
+            </ul>
+        </div>
+    </div>
 </body>
 </html>
 

@@ -220,6 +220,7 @@ func main(){
     http.HandleFunc("/upload", UploadHandler(storageFolder))
     http.Handle("/files/", FilesHandler(storageFolder))
     http.HandleFunc("/Cloud/browse", ListFilesHandler(storageFolder))
+    http.HandleFunc("/Cloud/download", DownloadHandler(storageFolder))
 
     http.HandleFunc("/", session)
     fmt.Println("Listening on Port: 8080")
@@ -228,7 +229,7 @@ func main(){
     fs := http.FileServer(http.Dir("static"))
     http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-    if err := http.ListenAndServe(":8080", nil); err != nil {
+    if err := http.ListenAndServeTLS(":8080", "Cert/server.crt", "Cert/server.key",  nil); err != nil {
         fmt.Println("Server Failed", err)
     }
 }

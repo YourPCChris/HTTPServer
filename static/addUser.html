@@ -3,16 +3,19 @@
 <html>
     <head>
         <title>Add User</title>
+        <link rel="stylesheet" type="text/css" href="static/styles/genericStyles.css">
     </head>
     <body>
-        <form method="POST">
-            <input type="text" name="adminUsername" placeholder="Admin Username" required><br><br>
-            <input type="password" name="adminPassword" placeholder="Admin Password" required><br><br>
+        <div class="Container">
+            <form method="POST">
+                <input type="text" name="adminUsername" placeholder="Admin Username" required><br><br>
+                <input type="password" name="adminPassword" placeholder="Admin Password" required><br><br>
 
-            <input type="text" name="newUsername" placeholder="New Username" required><br><br>
-            <input type="password" name="newPassword" placeholder="New Password" required><br><br>
+                <input type="text" name="newUsername" placeholder="New Username" required><br><br>
+                <input type="password" name="newPassword" placeholder="New Password" required><br><br>
 
-            <button type="submit">Add User</button>
-        </form>
+                <button type="submit">Add User</button>
+            </form>
+        </div>
     </body>
 </html>

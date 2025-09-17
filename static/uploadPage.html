@@ -3,13 +3,20 @@
 <head>
     <title>Upload File</title>
     <link rel="stylesheet" type="text/css" href="/static/styles/genericStyles.css">
+    <link rel="stylsheet" type="text/css" href="/static/styles/genericStyles.css">
 </head>
 <body>
-    <h1>Upload a File</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" required>
-        <button type="submit">Upload</button>
-    </form>
+    <div class="Container">
+        <div class="Header">
+            <h1>Upload a File</h1>
+        </div>
+        <div class="MenuContainer">
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" required>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
 
