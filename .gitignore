@@ -2,3 +2,6 @@
 *.key
 *.crt
 *.exe
+*.db
+*.sqlite
+*.sql
